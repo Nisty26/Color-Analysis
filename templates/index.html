@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Outfit Color Matcher</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h1>ChromaStyle</h1>
+    <div class="toggle-container">
+      <input type="checkbox" id="theme-toggle">
+      <label for="theme-toggle" class="toggle-label">🌙</label>
+    </div>
+  </nav>
+
+  <!-- Main container -->
+  <div class="container">
+    <h2>AI Outfit Color Matcher</h2>
+    <p>Upload your photo to analyze your skin tone and get personalized color suggestions!</p>
+
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" accept="image/*" required>
+      <button type="submit">Analyze</button>
+    </form>
+
+    {% if image %}
+    <div class="uploaded-img">
+      <h3>Uploaded Image:</h3>
+      <img src="{{ image }}" alt="Uploaded image">
+    </div>
+    {% endif %}
+
+    {% if analysis %}
+    <div class="result-card">
+      <h2>🎨 Your Color Analysis</h2>
+     
+      <h3>{{ analysis.tone }}</h3>
+      <p>{{ analysis.description }}</p>
+
+      <div class="palette">
+        {% for color in analysis.suggestions %}
+        <div class="color-box">
+          <div class="swatch" data-color="{{ color }}"></div>
+          <span>{{ color | capitalize }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Light/Dark Mode Toggle
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        html.setAttribute('data-theme', 'dark');
+      } else {
+        html.setAttribute('data-theme', 'light');
+      }
+    });
+
+    // Set swatch background colors from data attribute
+    document.querySelectorAll('.swatch[data-color]').forEach(function(swatch) {
+      swatch.style.backgroundColor = swatch.getAttribute('data-color');
+    });
+  </script>
+
+</body>
+</html>
